@@ -1,6 +1,6 @@
 use std::fs;
 
-const INPUT_PATH: &str = "../../input/day-01";
+const INPUT_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/input/day-01");
 
 struct Arrow {
     location: u16,
