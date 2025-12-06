@@ -14,13 +14,13 @@ fn main() {
     let mut invalid_sum = 0;
 
     for range in ranges {
-        check_range(&range, &mut invalid_sum);
+        check_invalid(&range, &mut invalid_sum);
     }
 
     dbg!(invalid_sum);
 }
 
-fn check_range(range: &Range, invalid_sum: &mut u64) {
+fn check_invalid(range: &Range, invalid_sum: &mut u64) {
     for id in range.start..=range.end {
         let digits = count_digits(id);
 

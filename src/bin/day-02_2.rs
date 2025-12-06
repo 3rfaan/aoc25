@@ -14,24 +14,36 @@ fn main() {
     let mut invalid_sum = 0;
 
     for range in ranges {
-        check_range(&range, &mut invalid_sum);
+        check_invalid(&range, &mut invalid_sum);
     }
 
     dbg!(invalid_sum);
 }
 
-fn check_range(range: &Range, invalid_sum: &mut u64) {
+fn check_invalid(range: &Range, invalid_sum: &mut u64) {
     for id in range.start..=range.end {
-        let digits = count_digits(id);
-
-        let Some((hi, lo)) = split_digits(id, digits) else {
-            continue;
-        };
-
-        if hi == lo {
+        if is_repeating_pattern(id) {
             *invalid_sum += id;
         }
     }
+}
+
+fn is_repeating_pattern(n: u64) -> bool {
+    let s = n.to_string();
+    let len = s.len();
+
+    for pattern_len in 1..=(len / 2) {
+        if len % pattern_len == 0 {
+            let pattern = &s[..pattern_len];
+            let repititions = len / pattern_len;
+
+            if pattern.repeat(repititions) == s {
+                return true;
+            }
+        }
+    }
+
+    false
 }
 
 fn count_digits(n: u64) -> u32 {
