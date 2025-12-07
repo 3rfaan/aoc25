@@ -1,24 +1,6 @@
-use std::{fs, io, ops::Index};
+use std::{fs, io};
 
 const INPUT_PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/input/day-03");
-
-struct Bank {
-    batteries: Vec<u8>,
-}
-
-impl Bank {
-    fn len(&self) -> usize {
-        self.batteries.len()
-    }
-}
-
-impl Index<usize> for Bank {
-    type Output = u8;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        &self.batteries[index]
-    }
-}
 
 fn main() {
     let banks = parse_input(INPUT_PATH).unwrap(); // Never fails
@@ -28,7 +10,7 @@ fn main() {
     dbg!(total);
 }
 
-fn max_joltage(bank: &Bank) -> u64 {
+fn max_joltage(bank: &Vec<u8>) -> u64 {
     let mut bank_max = 0;
 
     for i in 0..bank.len() {
@@ -42,13 +24,11 @@ fn max_joltage(bank: &Bank) -> u64 {
     bank_max as u64
 }
 
-fn parse_input(path: &str) -> io::Result<Vec<Bank>> {
+fn parse_input(path: &str) -> io::Result<Vec<Vec<u8>>> {
     let input = fs::read_to_string(path)?;
 
     Ok(input
         .lines()
-        .map(|line| Bank {
-            batteries: line.bytes().map(|b| b - b'0').collect(),
-        })
+        .map(|line| line.bytes().map(|b| b - b'0').collect())
         .collect())
 }
