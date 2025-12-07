@@ -7,39 +7,18 @@ struct Arrow {
     zero_count: i32,
 }
 
-impl Default for Arrow {
-    fn default() -> Self {
-        Self {
-            location: 50,
-            zero_count: 0,
-        }
-    }
-}
-
 struct Rotation {
-    direction: Direction,
+    direction: char,
     distance: i32,
-}
-
-enum Direction {
-    Left,
-    Right,
-}
-
-impl From<char> for Direction {
-    fn from(value: char) -> Self {
-        match value {
-            'L' => Self::Left,
-            'R' => Self::Right,
-            _ => unreachable!(),
-        }
-    }
 }
 
 fn main() {
     let rotations: Vec<Rotation> = parse_input(INPUT_PATH).unwrap(); // Never fails
 
-    let mut arrow = Arrow::default(); // Arrow starts at 50
+    let mut arrow = Arrow {
+        location: 50,
+        zero_count: 0,
+    };
 
     for rotation in rotations {
         rotate(&mut arrow, rotation);
@@ -53,9 +32,9 @@ fn rotate(arrow: &mut Arrow, rotation: Rotation) {
 
     for _ in 0..rotation.distance {
         match rotation.direction {
-            Direction::Right => arrow.location = (arrow.location + 1) % RANGE,
-
-            Direction::Left => arrow.location = (arrow.location - 1).rem_euclid(RANGE),
+            'R' => arrow.location = (arrow.location + 1) % RANGE,
+            'L' => arrow.location = (arrow.location - 1).rem_euclid(RANGE),
+            _ => unreachable!(),
         }
 
         if arrow.location == 0 {
@@ -71,7 +50,7 @@ fn parse_input(path: &str) -> io::Result<Vec<Rotation>> {
         .lines()
         .filter_map(|line| {
             let mut chars = line.chars();
-            let direction: Direction = chars.next()?.into();
+            let direction = chars.next()?;
             let distance: i32 = chars.as_str().parse().ok()?;
 
             Some(Rotation {
