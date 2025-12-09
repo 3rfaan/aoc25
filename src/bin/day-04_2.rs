@@ -19,35 +19,34 @@ const DIRS: [(isize, isize); 8] = [
 fn main() {
     let mut diagram = parse_input(INPUT_PATH).unwrap(); // Never fails
 
-    dbg!(count_removable(&mut diagram));
+    dbg!(count_removed(&mut diagram));
 }
 
-fn count_removable(diagram: &mut Diagram) -> usize {
+fn count_removed(diagram: &mut Diagram) -> usize {
     let mut removed = 0;
-    let mut batch = Vec::with_capacity(diagram.rows * diagram.cols / 4);
 
     loop {
-        // Loop through grid, check if paper roll is accessible and push it to batch
-        (0..diagram.rows)
+        // Loop through grid, check for each paper roll if accessible
+        let mut accessible: Vec<(usize, usize)> = (0..diagram.rows)
             .flat_map(|row| (0..diagram.cols).map(move |col| (row, col)))
             .filter(|&(row, col)| is_accessible(diagram, row, col))
-            .for_each(|(row, col)| batch.push((row, col)));
+            .collect();
 
-        // If batch is empty there are no more removable paper rolls
-        if batch.is_empty() {
+        // If there are no more accessible paper rolls break
+        if accessible.is_empty() {
             break;
         }
 
-        // Remove paper roll (replace @ with .)
-        for &(row, col) in &batch {
+        // Remove accessible paper roll (replace @ with .)
+        for &(row, col) in &accessible {
             diagram.grid[row][col] = b'.';
         }
 
         // Add amount of removed paper rolls to counter
-        removed += batch.len();
+        removed += accessible.len();
 
-        // Clear batch for next iteration
-        batch.clear();
+        // Clear vector of removed paper rolls
+        accessible.clear();
     }
 
     removed
