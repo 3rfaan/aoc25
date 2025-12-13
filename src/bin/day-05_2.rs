@@ -18,13 +18,13 @@ fn count_fresh(ranges: &mut [Range]) -> usize {
     // Sort ranges by start position
     ranges.sort_unstable_by_key(|range| range.start);
 
-    let (first, rest) = ranges.split_first_mut().unwrap(); // Never fails
-    let (mut start, mut end) = (first.start, first.end);
-
     let mut fresh = 0;
 
-    for range in rest {
-        if range.start <= end + 1 {
+    let mut start = ranges[0].start;
+    let mut end = ranges[0].end;
+
+    for range in &ranges[1..] {
+        if range.start <= end {
             end = end.max(range.end);
         } else {
             fresh += end - start + 1;
